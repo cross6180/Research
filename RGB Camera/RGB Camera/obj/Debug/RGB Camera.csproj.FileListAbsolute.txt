@@ -1,0 +1,11 @@
+D:\Research\RGB Camera\RGB Camera\bin\Debug\RGB Camera.exe.config
+D:\Research\RGB Camera\RGB Camera\bin\Debug\RGB Camera.exe
+D:\Research\RGB Camera\RGB Camera\bin\Debug\RGB Camera.pdb
+D:\Research\RGB Camera\RGB Camera\bin\Debug\AForge.Video.DirectShow.dll
+D:\Research\RGB Camera\RGB Camera\bin\Debug\AForge.Video.dll
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.csprojResolveAssemblyReference.cache
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB_Camera.Form1.resources
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB_Camera.Properties.Resources.resources
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.csproj.GenerateResource.Cache
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.exe
+D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.pdb
