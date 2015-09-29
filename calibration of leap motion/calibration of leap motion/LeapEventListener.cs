@@ -35,7 +35,7 @@ namespace calibration_of_leap_motion
         {
             this.eventDelegate.LeapEventNotification("onExit");
         }
-
+        //Not dispatched when running in debugger
         public override void OnDisconnect(Controller controller)
         {
             this.eventDelegate.LeapEventNotification("onDisconnect");
