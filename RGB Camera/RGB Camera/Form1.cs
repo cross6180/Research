@@ -16,14 +16,17 @@ namespace RGB_Camera
     {
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
+        private Bitmap image;
 
         public Form1()
         {
             InitializeComponent();
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //FilterInfoCollection Captures the video devices connected to the machine
             videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             
             foreach (FilterInfo device in videoDevices)
@@ -44,7 +47,11 @@ namespace RGB_Camera
             }
             else 
             {
+                //VideoCaptureDevice is used to Capture Stream from a FilterInfoCollection object or a cam specified to be exact.
                 videoSource = new VideoCaptureDevice(videoDevices[comboBox1.SelectedIndex].MonikerString);
+                //set resolution width x height : [0-7] 640 x 480, 160 x 120, 176 x 144, 320 x 240, 352 x 288, 800 x 600, 1280 x 720, 1920 x 1080
+                videoSource.VideoResolution = videoSource.VideoCapabilities[6];
+           
                 //set new frame event handler
                 videoSource.NewFrame += new NewFrameEventHandler(videoSource_NewFrame);
                 videoSource.Start();
@@ -53,8 +60,15 @@ namespace RGB_Camera
 
         void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            Bitmap Image = (Bitmap) eventArgs.Frame.Clone();
-            pictureBox1.Image = Image;
+            //if don't dispose the oldimage the ram memory will increases and after that the programm will crash 
+            Image oldImage = image;
+            image = (Bitmap) eventArgs.Frame.Clone();
+            pictureBox1.Image = image;
+
+            if (oldImage != null)
+            {
+                oldImage.Dispose();
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
