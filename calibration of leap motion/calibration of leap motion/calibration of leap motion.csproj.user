@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ReferencePath>D:\Research associated\opencv\;D:\Research associated\libemgucv-windows-universal-3.0.0.2157\;D:\Research associated\libemgucv-windows-universal-3.0.0.2157\bin\;D:\Research associated\libemgucv-windows-universal-3.0.0.2157\bin\x64\;D:\Emgu\emgucv-windows-universal 3.0.0.2157\bin\</ReferencePath>
+  </PropertyGroup>
+</Project>
