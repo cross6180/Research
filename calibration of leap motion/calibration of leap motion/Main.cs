@@ -55,8 +55,9 @@ namespace calibration_of_leap_motion
             {
                 switch (EventName)
                 {
-                    case "onInit":  
-                  
+                    case "onInit":
+                        this.initDistortionMat(this.controller.Frame().Images[0]);
+                        this.initDistortionMat(this.controller.Frame().Images[1]);
                         break;
                     case "onConnect":
                         this.connectHandler();
@@ -73,42 +74,68 @@ namespace calibration_of_leap_motion
             }
         }
 
-        private static Map<String,Mat> initDistortionMat(Leap.Image image) 
+        private Mat initDistortionMat(Leap.Image image) 
         {
-            Mat distortionX, distortionY;
-            distortionX = new Mat(image.Height,image.Width,Emgu.CV.CvEnum.DepthType.Cv32F, 1);
-            distortionY = new Mat(image.Height,image.Width,Emgu.CV.CvEnum.DepthType.Cv32F, 1);
-            for(int y = 0; y < image.Height; ++y) {
-                for(int x = 0; x < image.Width;++x) 
+            //Draw the undistorted image using the warp() function
+            Rectangle lockBounds = new Rectangle (0, 0, image.Width, image.Height);
+            Bitmap targetBitmap = new Bitmap (image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Mat distortionMat = new Mat();
+            //Mat distortionX, distortionY;
+            //distortionX = new Mat(image.Height,image.Width,Emgu.CV.CvEnum.DepthType.Cv32F, 1);
+            //distortionY = new Mat(image.Height,image.Width,Emgu.CV.CvEnum.DepthType.Cv32F, 1);
+            
+            //Iterate over target image pixels, converting xy to ray slope
+            for(int y = 0; y < image.Height; y++) {
+                for(int x = 0; x < image.Width;x++) 
                 {
-                    Vector input = new Vector((float)x/image.Width, (float)y/image.Height, 0);
                     //Normalize from pixel xy to range [0..1]
+                    Vector input = new Vector(x/image.Width, y/image.Height, 0);
+                    
                     //Convert from normalized [0..1] to slope [-4..4]
                     input.x = ((input.x - image.RayOffsetX) / image.RayOffsetX);
                     input.y = ((input.y - image.RayOffsetY) / image.RayOffsetY);
+
                     //Use slope to get coordinates of point in image.Data containing the brightness for this target pixel
                     Vector pixel = image.Warp(input);
                     if(pixel.x >= 0 && pixel.x < image.Width && pixel.y >= 0 && pixel.y < image.Height)
                     {
                         int dataIndex = (int)(Math.Floor (pixel.y) * image.Width + Math.Floor (pixel.x)); //xy to buffer index
                         byte brightness = image.Data [dataIndex];
+                        targetBitmap.SetPixel ((int)x, (int)y, Color.FromArgb (brightness, brightness, brightness));
                         
-                        distortionX[y,x,0] = pixel.x;
-                        distortionX.put(y, x, pixel.getX());
-                        distortionY.put(y, x, pixel.y);
+                        //distortionX[y,x,0] = pixel.x;
+                        //distortionX.put(y, x, pixel.getX());
+                        //distortionY.put(y, x, pixel.y);
                     } 
-                    else {
-                        distortionX.put(y, x, -1);
-                        distortionY.put(y, x, -1);    
+                    else 
+                    {
+                        targetBitmap.SetPixel ((int)x, (int)y, Color.Red); //Display invalid pixels as red
+                        //distortionX.put(y, x, -1);
+                        //distortionY.put(y, x, -1);    
                     }
+                    // Lock the bitmap's bits.  
+                    Rectangle rect = new Rectangle(0, 0, targetBitmap.Width, targetBitmap.Height);
+                    BitmapData bmpData = targetBitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite, targetBitmap.PixelFormat);
+                    
+                    // data = scan0 is a pointer to our memory block.
+                    IntPtr data = bmpData.Scan0;
+                    // step = stride = amount of bytes for a single line of the image
+                    int step = bmpData.Stride;
+                    // So you can try to get you Mat instance like this:
+                    distortionMat = new Mat(targetBitmap.Height, targetBitmap.Width, Emgu.CV.CvEnum.DepthType.Cv32F, 4, data, step);
+                    // Unlock the bits.
+                    targetBitmap.UnlockBits(bmpData);
                 }
             }
+
+
             
-            Map<String, Mat> distortionMats = new HashMap<>();
-            distortionMats.put("x", tempX);
-            distortionMats.put("y", tempY);
+            //Map<String, Mat> distortionMats = new HashMap<>();
+            //distortionMats.put("x", tempX);
+            //distortionMats.put("y", tempY);
             
-            return distortionMats;
+            //return distortionMats;
+            return distortionMat;
         }
 
         private void connectHandler()
