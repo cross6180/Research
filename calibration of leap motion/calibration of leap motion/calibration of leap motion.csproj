@@ -35,6 +35,10 @@
     <Reference Include="Emgu.CV">
       <HintPath>..\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.Cuda, Version=3.0.0.2157, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Emgu.CV.Cuda.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.ML">
       <HintPath>..\Emgu.CV.ML.dll</HintPath>
     </Reference>
@@ -73,6 +77,7 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="MatExtension.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Main.resx">

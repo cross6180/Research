@@ -42,3 +42,5 @@ C:\Users\User\Desktop\Research\calibration of leap motion\calibration of leap mo
 C:\Users\User\Desktop\Research\calibration of leap motion\calibration of leap motion\obj\Debug\calibration_of_leap_motion.Main.resources
 C:\Users\User\Desktop\Research\calibration of leap motion\calibration of leap motion\obj\Debug\calibration_of_leap_motion.Properties.Resources.resources
 C:\Users\User\Desktop\Research\calibration of leap motion\calibration of leap motion\obj\Debug\calibration of leap motion.csproj.GenerateResource.Cache
+D:\Research\calibration of leap motion\calibration of leap motion\bin\Debug\Emgu.CV.Cuda.dll
+D:\Research\calibration of leap motion\calibration of leap motion\bin\Debug\Emgu.CV.Cuda.xml
