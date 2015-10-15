@@ -24,6 +24,7 @@ namespace calibration_of_leap_motion
         private Bitmap bitmapLeft, bitmapRight;
         private Rectangle lockArea;
         private Mat dx_L, dy_L, dx_R, dy_R, mat;
+        private Leap.Image imageR;
 
         public Main()
         {
@@ -178,7 +179,7 @@ namespace calibration_of_leap_motion
 
                     //remap to undistorted image
                     Mat undistortedImg = new Mat(imageLeft.Height, imageLeft.Width, DepthType.Cv8U, 1);
-                    Mat emptymap = mat = new Mat(imageLeft.Height, imageLeft.Width, DepthType.Cv32F, 1);
+                    //Mat emptymap = mat = new Mat(imageLeft.Height, imageLeft.Width, DepthType.Cv32F, 1);
                     Mat dx = new Mat(imageLeft.Height, imageLeft.Width, DepthType.Cv8U, 1);
                     Mat dy = new Mat(imageLeft.Height, imageLeft.Width, DepthType.Cv8U, 1);
                     CvInvoke.ConvertMaps(dx_L, dy_L, dx, dy, DepthType.Cv8U, 1);
@@ -191,6 +192,7 @@ namespace calibration_of_leap_motion
             }
             if (imageRight.IsValid)
             {
+                imageR = frame.Images[1];
                 //將 Bitmap 鎖定在系統記憶體內，BitmapData 指定 Bitmap 的屬性，例如大小、像素格式、像素資料在記憶體中的起始位址，以及每條掃描線 (分散) 的長度。
                 BitmapData bitmapData = bitmapRight.LockBits(lockArea, ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
                 byte[] rawImageData = imageRight.Data;
@@ -224,6 +226,49 @@ namespace calibration_of_leap_motion
             {
                 base.Dispose(disposing);
             }
+        }
+
+        private void btnSaveImage_Click(object sender, EventArgs e)
+        {
+            Bitmap b = UndistortImage(imageR);
+            picboxUndistorted.Image = b;
+
+        }
+
+        private Bitmap UndistortImage(Leap.Image image)
+        {
+            //Draw the undistorted image using the warp() function
+            Rectangle lockBounds = new Rectangle(0, 0, image.Width, image.Height);
+            Bitmap targetBitmap = new Bitmap(image.Width, image.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            //Iterate over target image pixels, converting xy to ray slope
+            for (float y = 0; y < image.Height; y++)
+            {
+                for (float x = 0; x < image.Width; x++)
+                {
+                    //Normalize from pixel xy to range [0..1]
+                    Vector input = new Vector(x / image.Width, y / image.Height, 0);
+
+                    //Convert from normalized [0..1] to slope [-4..4]
+                    input.x = (input.x - image.RayOffsetX) / image.RayScaleX;
+                    input.y = (input.y - image.RayOffsetY) / image.RayScaleY;
+
+                    //Use slope to get coordinates of point in image.Data containing the brightness for this target pixel
+                    Vector pixel = image.Warp(input);
+
+                    if (pixel.x >= 0 && pixel.x < image.Width && pixel.y >= 0 && pixel.y < image.Height)
+                    {
+                        int dataIndex = (int)(Math.Floor(pixel.y) * image.Width + Math.Floor(pixel.x)); //xy to buffer index
+                        byte brightness = image.Data[dataIndex];
+                        targetBitmap.SetPixel((int)x, (int)y, Color.FromArgb(brightness, brightness, brightness));
+                    }
+                    else
+                    {
+                        targetBitmap.SetPixel((int)x, (int)y, Color.Red); //Display invalid pixels as red
+                    }
+                }
+            }
+            return targetBitmap;
         }
     }
 

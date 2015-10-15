@@ -35,6 +35,9 @@
     <Reference Include="AForge.Controls">
       <HintPath>..\AForge.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="AForge.Imaging">
+      <HintPath>..\AForge.Imaging.dll</HintPath>
+    </Reference>
     <Reference Include="AForge.Video">
       <HintPath>..\AForge.Video.dll</HintPath>
     </Reference>

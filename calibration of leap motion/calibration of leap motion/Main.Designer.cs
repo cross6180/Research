@@ -34,8 +34,11 @@
             this.picboxLeapRight = new System.Windows.Forms.PictureBox();
             this.txtLeapFPS = new System.Windows.Forms.TextBox();
             this.labLeapFPS = new System.Windows.Forms.Label();
+            this.btnSaveImage = new System.Windows.Forms.Button();
+            this.picboxUndistorted = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapRight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxUndistorted)).BeginInit();
             this.SuspendLayout();
             // 
             // picboxLeapLeft
@@ -90,11 +93,32 @@
             this.labLeapFPS.TabIndex = 5;
             this.labLeapFPS.Text = "Leap Camera FPS";
             // 
+            // btnSaveImage
+            // 
+            this.btnSaveImage.Location = new System.Drawing.Point(869, 249);
+            this.btnSaveImage.Name = "btnSaveImage";
+            this.btnSaveImage.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveImage.TabIndex = 6;
+            this.btnSaveImage.Text = "Save";
+            this.btnSaveImage.UseVisualStyleBackColor = true;
+            this.btnSaveImage.Click += new System.EventHandler(this.btnSaveImage_Click);
+            // 
+            // picboxUndistorted
+            // 
+            this.picboxUndistorted.Location = new System.Drawing.Point(710, 304);
+            this.picboxUndistorted.Name = "picboxUndistorted";
+            this.picboxUndistorted.Size = new System.Drawing.Size(675, 243);
+            this.picboxUndistorted.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.picboxUndistorted.TabIndex = 7;
+            this.picboxUndistorted.TabStop = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1277, 611);
+            this.ClientSize = new System.Drawing.Size(1521, 744);
+            this.Controls.Add(this.picboxUndistorted);
+            this.Controls.Add(this.btnSaveImage);
             this.Controls.Add(this.labLeapFPS);
             this.Controls.Add(this.txtLeapFPS);
             this.Controls.Add(this.labLeapRight);
@@ -105,6 +129,7 @@
             this.Text = "Main";
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapLeft)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapRight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxUndistorted)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,6 +143,8 @@
         private System.Windows.Forms.PictureBox picboxLeapRight;
         private System.Windows.Forms.TextBox txtLeapFPS;
         private System.Windows.Forms.Label labLeapFPS;
+        private System.Windows.Forms.Button btnSaveImage;
+        private System.Windows.Forms.PictureBox picboxUndistorted;
     }
 }
 

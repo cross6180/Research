@@ -10,3 +10,4 @@ D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.csproj.GenerateResource.C
 D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.exe
 D:\Research\RGB Camera\RGB Camera\obj\Debug\RGB Camera.pdb
 D:\Research\RGB Camera\RGB Camera\bin\Debug\AForge.Controls.dll
+D:\Research\RGB Camera\RGB Camera\bin\Debug\AForge.Imaging.dll

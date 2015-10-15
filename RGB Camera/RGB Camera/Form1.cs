@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
+using System.Drawing.Imaging;
+using AForge.Imaging.Filters;
 
 namespace RGB_Camera
 {
@@ -50,7 +52,7 @@ namespace RGB_Camera
                 //VideoCaptureDevice is used to Capture Stream from a FilterInfoCollection object or a cam specified to be exact.
                 videoSource = new VideoCaptureDevice(videoDevices[comboBox1.SelectedIndex].MonikerString);
                 //set resolution width x height : [0-7] 640 x 480, 160 x 120, 176 x 144, 320 x 240, 352 x 288, 800 x 600, 1280 x 720, 1920 x 1080
-                videoSource.VideoResolution = videoSource.VideoCapabilities[6];
+                videoSource.VideoResolution = videoSource.VideoCapabilities[7];
            
                 //set new frame event handler
                 videoSource.NewFrame += new NewFrameEventHandler(videoSource_NewFrame);
@@ -62,13 +64,20 @@ namespace RGB_Camera
         {
             //if don't dispose the oldimage the ram memory will increases and after that the programm will crash 
             Image oldImage = image;
-            image = (Bitmap) eventArgs.Frame.Clone();
-            pictureBox1.Image = image;
+            image = (Bitmap)eventArgs.Frame.Clone();
+            //image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            // create filter - rotate for 90 degrees keeping original image size
+            RotateBilinear filter = new RotateBilinear(90, true);
+            // apply the filter
+            //Bitmap newImage = new Bitmap(image.Height, image.Width);
+            Bitmap newImage = filter.Apply(image);
+            pictureBox1.Image = newImage;
 
             if (oldImage != null)
             {
                 oldImage.Dispose();
-            }
+                //newImage.Dispose();
+            }          
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -77,6 +86,14 @@ namespace RGB_Camera
             {
                 videoSource.Stop();
             }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Bitmap img = (Bitmap) pictureBox1.Image.Clone();
+            img.Save(@"D:\Research\Image\Test4.bmp", ImageFormat.Bmp);
+            img.Dispose();
+            img = null;
         }
     }
 }
