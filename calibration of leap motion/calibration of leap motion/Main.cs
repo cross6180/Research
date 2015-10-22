@@ -380,12 +380,12 @@ namespace calibration_of_leap_motion
             picboxUndistortedL.Image = (Bitmap) bLeft.Clone();
             Bitmap imgRGB = (Bitmap)picboxRGB.Image.Clone();
             picboxRGBCapture.Image = (Bitmap) imgRGB.Clone();
-            
-            bRight.Save(@"D:\Research\Image\leapRight" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
-            bLeft.Save(@"D:\Research\Image\leapLeft" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
-            imgRGB.Save(@"D:\Research\Image\rgb" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
-            distortedL.Save(@"D:\Research\Image\distortedLeapLeft" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
-            distortedR.Save(@"D:\Research\Image\distortedLeapRight" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
+
+            bRight.Save(@"D:\Research\Image\Undistorted Leap Right\leapRight" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
+            bLeft.Save(@"D:\Research\Image\Undistorted Leap Left\leapLeft" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
+            imgRGB.Save(@"D:\Research\Image\RGB\rgb" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
+            distortedL.Save(@"D:\Research\Image\LeapLeft\distortedLeapLeft" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
+            distortedR.Save(@"D:\Research\Image\LeapRight\distortedLeapRight" + cnt.ToString() + ".bmp", ImageFormat.Bmp);
 
             bRight.Dispose(); bLeft.Dispose(); imgRGB.Dispose(); distortedL.Dispose(); distortedR.Dispose();
             bRight = null; bLeft = null; imgRGB = null; distortedL = null; distortedR = null;
