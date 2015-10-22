@@ -19,6 +19,7 @@ namespace RGB_Camera
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
         private Bitmap image;
+        static Bitmap newImage;
 
         public Form1()
         {
@@ -65,13 +66,11 @@ namespace RGB_Camera
             //if don't dispose the oldimage the ram memory will increases and after that the programm will crash 
             Image oldImage = image;
             image = (Bitmap)eventArgs.Frame.Clone();
-            //image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-            // create filter - rotate for 90 degrees keeping original image size
-            RotateBilinear filter = new RotateBilinear(90, true);
-            // apply the filter
-            //Bitmap newImage = new Bitmap(image.Height, image.Width);
-            Bitmap newImage = filter.Apply(image);
-            pictureBox1.Image = newImage;
+            
+            //rotate for 90 degrees keeping original image size
+            image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            pictureBox1.Image = image;
+            
 
             if (oldImage != null)
             {

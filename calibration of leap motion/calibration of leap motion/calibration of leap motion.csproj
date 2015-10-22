@@ -32,12 +32,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge.Controls">
+      <HintPath>..\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging">
+      <HintPath>..\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video">
+      <HintPath>..\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>..\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\Emgu.CV.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Cuda, Version=3.0.0.2157, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Emgu.CV.Cuda.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.ML">
       <HintPath>..\Emgu.CV.ML.dll</HintPath>
