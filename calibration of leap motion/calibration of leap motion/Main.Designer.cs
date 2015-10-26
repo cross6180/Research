@@ -43,6 +43,8 @@
             this.labRGBCamera = new System.Windows.Forms.Label();
             this.picboxRGBCapture = new System.Windows.Forms.PictureBox();
             this.labRGBCapture = new System.Windows.Forms.Label();
+            this.labCnt = new System.Windows.Forms.Label();
+            this.txtCnt = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeapRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxUndistortedR)).BeginInit();
@@ -105,7 +107,7 @@
             // 
             // btnSaveImage
             // 
-            this.btnSaveImage.Location = new System.Drawing.Point(706, 567);
+            this.btnSaveImage.Location = new System.Drawing.Point(706, 610);
             this.btnSaveImage.Name = "btnSaveImage";
             this.btnSaveImage.Size = new System.Drawing.Size(75, 23);
             this.btnSaveImage.TabIndex = 6;
@@ -185,11 +187,29 @@
             this.labRGBCapture.TabIndex = 15;
             this.labRGBCapture.Text = "RGB Capture Image";
             // 
+            // labCnt
+            // 
+            this.labCnt.AutoSize = true;
+            this.labCnt.Location = new System.Drawing.Point(706, 567);
+            this.labCnt.Name = "labCnt";
+            this.labCnt.Size = new System.Drawing.Size(58, 12);
+            this.labCnt.TabIndex = 17;
+            this.labCnt.Text = "# of photos";
+            // 
+            // txtCnt
+            // 
+            this.txtCnt.Location = new System.Drawing.Point(800, 564);
+            this.txtCnt.Name = "txtCnt";
+            this.txtCnt.Size = new System.Drawing.Size(145, 22);
+            this.txtCnt.TabIndex = 16;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1395, 696);
+            this.Controls.Add(this.labCnt);
+            this.Controls.Add(this.txtCnt);
             this.Controls.Add(this.labRGBCapture);
             this.Controls.Add(this.picboxRGBCapture);
             this.Controls.Add(this.labRGBCamera);
@@ -237,6 +257,8 @@
         private System.Windows.Forms.Label labRGBCamera;
         private System.Windows.Forms.PictureBox picboxRGBCapture;
         private System.Windows.Forms.Label labRGBCapture;
+        private System.Windows.Forms.Label labCnt;
+        private System.Windows.Forms.TextBox txtCnt;
     }
 }
 
