@@ -1,0 +1,14 @@
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Disparity Map for Leap.exe.config
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Disparity Map for Leap.exe
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Disparity Map for Leap.pdb
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.CV.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.CV.ML.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.CV.OCR.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.CV.UI.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.CV.UI.GL.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\bin\Debug\Emgu.Util.dll
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.csprojResolveAssemblyReference.cache
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity_Map_for_Leap.Properties.Resources.resources
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.csproj.GenerateResource.Cache
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.exe
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.pdb
