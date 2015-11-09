@@ -12,3 +12,4 @@ D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity_Ma
 D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.csproj.GenerateResource.Cache
 D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.exe
 D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity Map for Leap.pdb
+D:\Research\Disparity Map for Leap\Disparity Map for Leap\obj\Debug\Disparity_Map_for_Leap.MainForm.resources

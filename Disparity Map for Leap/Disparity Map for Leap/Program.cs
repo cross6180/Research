@@ -16,7 +16,7 @@ namespace Disparity_Map_for_Leap
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new MainForm());
         }
     }
 }
