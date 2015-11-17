@@ -369,7 +369,7 @@ namespace calibration_of_leap_motion
             }
         }
 
-        private int cnt = 1; 
+        private int cnt = 3; 
         private void btnSavaImage_Click(object sender, EventArgs e)
         {
             Bitmap distortedL = (Bitmap) picboxLeapLeft.Image.Clone();

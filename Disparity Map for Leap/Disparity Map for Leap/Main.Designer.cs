@@ -66,6 +66,8 @@
             this.labspeckleWindowSize = new System.Windows.Forms.Label();
             this.btnBlend = new System.Windows.Forms.Button();
             this.btnBlendRGB = new System.Windows.Forms.Button();
+            this.picboxRGB = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxDisp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picbocRight)).BeginInit();
@@ -79,6 +81,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.TBp2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleWindowSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // picboxLeft
@@ -144,6 +148,7 @@
             this.TBminDisparity.Size = new System.Drawing.Size(516, 45);
             this.TBminDisparity.TabIndex = 6;
             this.TBminDisparity.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.TBminDisparity.Visible = false;
             this.TBminDisparity.Scroll += new System.EventHandler(this.TBminDisparity_Scroll);
             // 
             // labminDisparity
@@ -154,6 +159,7 @@
             this.labminDisparity.Size = new System.Drawing.Size(11, 12);
             this.labminDisparity.TabIndex = 7;
             this.labminDisparity.Text = "0";
+            this.labminDisparity.Visible = false;
             // 
             // label4
             // 
@@ -163,6 +169,7 @@
             this.label4.Size = new System.Drawing.Size(65, 12);
             this.label4.TabIndex = 8;
             this.label4.Text = "minDisparity";
+            this.label4.Visible = false;
             // 
             // label5
             // 
@@ -172,6 +179,7 @@
             this.label5.Size = new System.Drawing.Size(74, 12);
             this.label5.TabIndex = 11;
             this.label5.Text = "numDisparities";
+            this.label5.Visible = false;
             // 
             // labnumDisparities
             // 
@@ -181,6 +189,7 @@
             this.labnumDisparities.Size = new System.Drawing.Size(23, 12);
             this.labnumDisparities.TabIndex = 10;
             this.labnumDisparities.Text = "112";
+            this.labnumDisparities.Visible = false;
             // 
             // TBnumDisparities
             // 
@@ -194,6 +203,7 @@
             this.TBnumDisparities.TickFrequency = 16;
             this.TBnumDisparities.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBnumDisparities.Value = 112;
+            this.TBnumDisparities.Visible = false;
             this.TBnumDisparities.Scroll += new System.EventHandler(this.TBnumDisparities_Scroll);
             // 
             // label7
@@ -204,6 +214,7 @@
             this.label7.Size = new System.Drawing.Size(86, 12);
             this.label7.TabIndex = 14;
             this.label7.Text = "SADWindowSize";
+            this.label7.Visible = false;
             // 
             // labSADWindowSize
             // 
@@ -213,6 +224,7 @@
             this.labSADWindowSize.Size = new System.Drawing.Size(11, 12);
             this.labSADWindowSize.TabIndex = 13;
             this.labSADWindowSize.Text = "3";
+            this.labSADWindowSize.Visible = false;
             // 
             // TBSADWindowSize
             // 
@@ -226,6 +238,7 @@
             this.TBSADWindowSize.TickFrequency = 2;
             this.TBSADWindowSize.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBSADWindowSize.Value = 3;
+            this.TBSADWindowSize.Visible = false;
             this.TBSADWindowSize.Scroll += new System.EventHandler(this.TBSADWindowSize_Scroll);
             // 
             // label9
@@ -236,6 +249,7 @@
             this.label9.Size = new System.Drawing.Size(17, 12);
             this.label9.TabIndex = 17;
             this.label9.Text = "p1";
+            this.label9.Visible = false;
             // 
             // labp1
             // 
@@ -245,6 +259,7 @@
             this.labp1.Size = new System.Drawing.Size(11, 12);
             this.labp1.TabIndex = 16;
             this.labp1.Text = "0";
+            this.labp1.Visible = false;
             // 
             // TBp1
             // 
@@ -254,6 +269,7 @@
             this.TBp1.Size = new System.Drawing.Size(516, 45);
             this.TBp1.TabIndex = 15;
             this.TBp1.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.TBp1.Visible = false;
             this.TBp1.Scroll += new System.EventHandler(this.TBp1_Scroll);
             // 
             // label11
@@ -264,6 +280,7 @@
             this.label11.Size = new System.Drawing.Size(81, 12);
             this.label11.TabIndex = 29;
             this.label11.Text = "uniquenessRatio";
+            this.label11.Visible = false;
             // 
             // labuniquenessRatio
             // 
@@ -273,6 +290,7 @@
             this.labuniquenessRatio.Size = new System.Drawing.Size(17, 12);
             this.labuniquenessRatio.TabIndex = 28;
             this.labuniquenessRatio.Text = "12";
+            this.labuniquenessRatio.Visible = false;
             // 
             // TBuniquenessRatio
             // 
@@ -284,6 +302,7 @@
             this.TBuniquenessRatio.TabIndex = 27;
             this.TBuniquenessRatio.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBuniquenessRatio.Value = 12;
+            this.TBuniquenessRatio.Visible = false;
             this.TBuniquenessRatio.Scroll += new System.EventHandler(this.TBuniquenessRatio_Scroll);
             // 
             // label13
@@ -294,6 +313,7 @@
             this.label13.Size = new System.Drawing.Size(63, 12);
             this.label13.TabIndex = 26;
             this.label13.Text = "preFilterCap";
+            this.label13.Visible = false;
             // 
             // labpreFilterCap
             // 
@@ -303,6 +323,7 @@
             this.labpreFilterCap.Size = new System.Drawing.Size(17, 12);
             this.labpreFilterCap.TabIndex = 25;
             this.labpreFilterCap.Text = "20";
+            this.labpreFilterCap.Visible = false;
             // 
             // TBpreFilterCap
             // 
@@ -313,6 +334,7 @@
             this.TBpreFilterCap.TabIndex = 24;
             this.TBpreFilterCap.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBpreFilterCap.Value = 20;
+            this.TBpreFilterCap.Visible = false;
             this.TBpreFilterCap.Scroll += new System.EventHandler(this.TBpreFilterCap_Scroll);
             // 
             // label15
@@ -323,6 +345,7 @@
             this.label15.Size = new System.Drawing.Size(76, 12);
             this.label15.TabIndex = 23;
             this.label15.Text = "disp12MaxDiff";
+            this.label15.Visible = false;
             // 
             // labdisp12MaxDiff
             // 
@@ -332,6 +355,7 @@
             this.labdisp12MaxDiff.Size = new System.Drawing.Size(11, 12);
             this.labdisp12MaxDiff.TabIndex = 22;
             this.labdisp12MaxDiff.Text = "8";
+            this.labdisp12MaxDiff.Visible = false;
             // 
             // TBdisp12MaxDiff
             // 
@@ -342,6 +366,7 @@
             this.TBdisp12MaxDiff.TabIndex = 21;
             this.TBdisp12MaxDiff.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBdisp12MaxDiff.Value = 8;
+            this.TBdisp12MaxDiff.Visible = false;
             this.TBdisp12MaxDiff.Scroll += new System.EventHandler(this.TBdisp12MaxDiff_Scroll);
             // 
             // label17
@@ -352,6 +377,7 @@
             this.label17.Size = new System.Drawing.Size(17, 12);
             this.label17.TabIndex = 20;
             this.label17.Text = "p2";
+            this.label17.Visible = false;
             // 
             // labp2
             // 
@@ -361,6 +387,7 @@
             this.labp2.Size = new System.Drawing.Size(11, 12);
             this.labp2.TabIndex = 19;
             this.labp2.Text = "0";
+            this.labp2.Visible = false;
             // 
             // TBp2
             // 
@@ -370,6 +397,7 @@
             this.TBp2.Size = new System.Drawing.Size(516, 45);
             this.TBp2.TabIndex = 18;
             this.TBp2.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.TBp2.Visible = false;
             this.TBp2.Scroll += new System.EventHandler(this.TBp2_Scroll);
             // 
             // label19
@@ -380,6 +408,7 @@
             this.label19.Size = new System.Drawing.Size(69, 12);
             this.label19.TabIndex = 33;
             this.label19.Text = "speckleRange";
+            this.label19.Visible = false;
             // 
             // TBspeckleRange
             // 
@@ -389,7 +418,8 @@
             this.TBspeckleRange.Size = new System.Drawing.Size(516, 45);
             this.TBspeckleRange.TabIndex = 32;
             this.TBspeckleRange.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.TBspeckleRange.Value = 1;
+            this.TBspeckleRange.Value = 3;
+            this.TBspeckleRange.Visible = false;
             this.TBspeckleRange.Scroll += new System.EventHandler(this.TBspeckleRange_Scroll);
             // 
             // label20
@@ -400,6 +430,7 @@
             this.label20.Size = new System.Drawing.Size(98, 12);
             this.label20.TabIndex = 31;
             this.label20.Text = "speckleWindowSize";
+            this.label20.Visible = false;
             // 
             // TBspeckleWindowSize
             // 
@@ -410,6 +441,7 @@
             this.TBspeckleWindowSize.TabIndex = 30;
             this.TBspeckleWindowSize.TickStyle = System.Windows.Forms.TickStyle.None;
             this.TBspeckleWindowSize.Value = 65;
+            this.TBspeckleWindowSize.Visible = false;
             this.TBspeckleWindowSize.Scroll += new System.EventHandler(this.TBspeckleWindowSize_Scroll);
             // 
             // labspeckleRange
@@ -419,7 +451,8 @@
             this.labspeckleRange.Name = "labspeckleRange";
             this.labspeckleRange.Size = new System.Drawing.Size(11, 12);
             this.labspeckleRange.TabIndex = 35;
-            this.labspeckleRange.Text = "1";
+            this.labspeckleRange.Text = "3";
+            this.labspeckleRange.Visible = false;
             // 
             // labspeckleWindowSize
             // 
@@ -429,6 +462,7 @@
             this.labspeckleWindowSize.Size = new System.Drawing.Size(17, 12);
             this.labspeckleWindowSize.TabIndex = 34;
             this.labspeckleWindowSize.Text = "65";
+            this.labspeckleWindowSize.Visible = false;
             // 
             // btnBlend
             // 
@@ -450,13 +484,39 @@
             this.btnBlendRGB.UseVisualStyleBackColor = true;
             this.btnBlendRGB.Click += new System.EventHandler(this.btnBlendRGB_Click);
             // 
+            // picboxRGB
+            // 
+            this.picboxRGB.Location = new System.Drawing.Point(496, 24);
+            this.picboxRGB.Name = "picboxRGB";
+            this.picboxRGB.Size = new System.Drawing.Size(445, 169);
+            this.picboxRGB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picboxRGB.TabIndex = 38;
+            this.picboxRGB.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(496, 221);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(445, 169);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 39;
+            this.pictureBox1.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1089, 593);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.picboxRGB);
             this.Controls.Add(this.btnBlendRGB);
             this.Controls.Add(this.btnBlend);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.picbocRight);
+            this.Controls.Add(this.picboxDisp);
+            this.Controls.Add(this.picboxLeft);
             this.Controls.Add(this.labspeckleRange);
             this.Controls.Add(this.labspeckleWindowSize);
             this.Controls.Add(this.label19);
@@ -487,12 +547,6 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.labminDisparity);
             this.Controls.Add(this.TBminDisparity);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.picbocRight);
-            this.Controls.Add(this.picboxDisp);
-            this.Controls.Add(this.picboxLeft);
             this.Name = "MainForm";
             this.Text = "Main";
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeft)).EndInit();
@@ -508,6 +562,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.TBp2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleWindowSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -553,6 +609,8 @@
         private System.Windows.Forms.Label labspeckleWindowSize;
         private System.Windows.Forms.Button btnBlend;
         private System.Windows.Forms.Button btnBlendRGB;
+        private System.Windows.Forms.PictureBox picboxRGB;
+        private System.Windows.Forms.PictureBox pictureBox1;
 
 
     }
