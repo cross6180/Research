@@ -18,42 +18,23 @@ namespace Disparity_Map_for_Leap
 {
     public partial class MainForm : Form
     {
-        //private Mat imageLeft, imageRight;
-        private Mat disparity, disp8;
-        private StereoSGBM sgbm;
+        private Mat disparity, disp8;        
         private int minDisparity, numDisparities, SADWindowSize, P1, P2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange;
-        private Image<Gray, byte> imageLeft, imageRight, IRblendImage, imageZ;
-        private Image<Bgr, byte> undistortedRGB, grayBGRImage;
-
-        // K is known as the camera intrsic matrix, and defined as follows: 
-        //     [ fc(1)  alpha_c*fc(1)  cc(1) ]
-        // K = [   0        fc(2)      cc(2) ]
-        //     [   0          0          1   ]
-        private double[] Kirleft = new double[9] { 134.150, 0.318, 318.021, 0, 67.096, 119.986, 0, 0, 1 };
-        private double[] Kirright = new double[9] { 133.929, 0.335, 318.059, 0, 67.052, 119.872, 0, 0, 1 };
-        private double[] Krgb = new double[9] { 706.138, 0.840, 948.851, 0, 705.323, 519.707, 0, 0, 1 };
-        //KC is the camera distortion matrix
-        private double[] KCirleft = new double[5] { 0.18099, -0.11245, 0, 0, 0.02025 };
-        private double[] KCirright = new double[5] { 0.18082, -0.11238, 0, 0, 0.02046 };
-        private double[] KCrgb = new double[5] { -0.00516, -0.02390, -0.00112, 0.00058, 0.00328 };
-
-        //R is the rotational matrix of ir cameras
-        private double[] R = new double[9] { 1, -0.0006, -0.0063, 0.0006, 1, 0.0004, 0.0063, -0.0004, 1 };
-        //T is the translation matrix of ir cameras
-        private double[] T = new double[3] { -39.6423, 0.1201, 0.1893 };
+        private Image<Gray, byte> irLeftImage, irRightImage, imageLeft, imageRight, IRblendImage, imageZ;
+        private Image<Bgr, byte> undistortedRGB, grayBGRImage;        
 
         private Matrix<double> IRleftCameraMatrix = new Matrix<double>(3, 3);
         private Matrix<double> IRrightCameraMatrix = new Matrix<double>(3, 3);
-        private Matrix<double> cameraMatrix = new Matrix<double>(3, 3);
-        private Matrix<double> Q;
+        private Matrix<double> RGBcameraMatrix = new Matrix<double>(3, 3);
+        private Matrix<double> IRleftDistortionM, IRrightDistortionM;
+        
         private MCvPoint3D32f[] depthPoints;
 
         public MainForm()
         {
             InitializeComponent();
-            ReadImage();
-            
-            
+            ReadImageAndCameraMatrix();
+           
             picboxRGB.Image = undistortedRGB.Bitmap;
             undistortedRGB.Save("D:/Research/Image/disparity map/undistortRGB3.bmp");
             
@@ -61,49 +42,62 @@ namespace Disparity_Map_for_Leap
             picboxLeft.Image = imageLeft.Bitmap;
             picbocRight.Image = imageRight.Bitmap;
             picboxDisp.Image = disp8.Bitmap;
-            imageLeft.Save("D:/Research/Image/disparity map/undistortLeapLeft3.bmp");
-            //getDepth();
+            imageLeft.Save("D:/Research/Image/disparity map/rectLeapLeft3.bmp");
+            imageRight.Save("D:/Research/Image/disparity map/rectLeapRight3.bmp");
+            getDepth();
         }
 
-        private void ReadImage()
+        private void ReadImageAndCameraMatrix()
         {
             Mat imageL = CvInvoke.Imread("D:/Research/Image/disparity map/LeapLeft3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
             Mat imageR = CvInvoke.Imread("D:/Research/Image/disparity map/LeapRight3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            Image<Gray, byte> irLeftImage = imageL.ToImage<Gray, byte>();
-            Image<Gray, byte> irRightImage = imageR.ToImage<Gray, byte>();
+            irLeftImage = imageL.ToImage<Gray, byte>();
+            irRightImage = imageR.ToImage<Gray, byte>();
             Mat rgb = CvInvoke.Imread("D:/Research/Image/disparity map/rgb3.bmp", Emgu.CV.CvEnum.LoadImageType.Color);
             Image<Bgr, byte> rgbImage = rgb.ToImage<Bgr, byte>();    //1920 x 1080
-            
-            //new undistored image
-            
+
+            //new undistored image            
             undistortedRGB = new Image<Bgr, byte>(rgbImage.Size);
-            
+
             //get camera matrix of ir cameras and rgb camera
+            // K is known as the camera intrsic matrix, and defined as follows: 
+            //     [ fc(1)  alpha_c*fc(1)  cc(1) ]
+            // K = [   0        fc(2)      cc(2) ]
+            //     [   0          0          1   ]
+            double[] Kirleft = new double[9] { 134.150, 0.318, 318.021, 0, 67.096, 119.986, 0, 0, 1 };
+            double[] Kirright = new double[9] { 133.929, 0.335, 318.059, 0, 67.052, 119.872, 0, 0, 1 };
+            double[] Krgb = new double[9] { 706.138, 0.840, 948.851, 0, 705.323, 519.707, 0, 0, 1 };
+            //KC is the camera distortion matrix
+            double[] KCirleft = new double[5] { 0.18099, -0.11245, 0, 0, 0.02025 };
+            double[] KCirright = new double[5] { 0.18082, -0.11238, 0, 0, 0.02046 };
+            double[] KCrgb = new double[5] { -0.00516, -0.02390, -0.00112, 0.00058, 0.00328 };
+
+            IRleftDistortionM = new Matrix<double>(KCirleft);
+            IRrightDistortionM = new Matrix<double>(KCirright);
+
             for (int i = 0; i < 9; i++)
             {
                 if (i < 3)
                 {
                     IRleftCameraMatrix[0, i] = Kirleft[i];
                     IRrightCameraMatrix[0, i] = Kirright[i];
-                    cameraMatrix[0, i] = Krgb[i];
+                    RGBcameraMatrix[0, i] = Krgb[i];
                 }
                 else if (i < 6)
                 {
                     IRleftCameraMatrix[1, i - 3] = Kirleft[i];
                     IRrightCameraMatrix[1, i - 3] = Kirright[i];
-                    cameraMatrix[1, i - 3] = Krgb[i];
+                    RGBcameraMatrix[1, i - 3] = Krgb[i];
                 }
                 else
                 {
                     IRleftCameraMatrix[2, i - 6] = Kirleft[i];
                     IRrightCameraMatrix[2, i - 6] = Kirright[i];
-                    cameraMatrix[2, i - 6] = Krgb[i];
+                    RGBcameraMatrix[2, i - 6] = Krgb[i];
                 }
             }
             //remove distortion
-            //CvInvoke.Undistort(irLeftImage, imageLeft, IRleftCameraMatrix, new Matrix<double>(KCirleft));
-            //CvInvoke.Undistort(irRightImage, imageRight, IRrightCameraMatrix, new Matrix<double>(KCirright));
-            CvInvoke.Undistort(rgbImage, undistortedRGB, cameraMatrix, new Matrix<double>(KCrgb));
+            CvInvoke.Undistort(rgbImage, undistortedRGB, RGBcameraMatrix, new Matrix<double>(KCrgb));
 
             disparity = new Mat();
             disp8 = new Mat();
@@ -111,15 +105,15 @@ namespace Disparity_Map_for_Leap
 
         private void get3DspacePoint()
         {
-            Mat imageL = CvInvoke.Imread("D:/Research/Image/disparity map/LeapLeft3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            Mat imageR = CvInvoke.Imread("D:/Research/Image/disparity map/LeapRight3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            Image<Gray, byte> irLeftImage = imageL.ToImage<Gray, byte>();
-            Image<Gray, byte> irRightImage = imageR.ToImage<Gray, byte>();
-            imageLeft = new Image<Gray, byte>(undistortedRGB.Size);
-            imageRight = new Image<Gray, byte>(undistortedRGB.Size);
+            imageLeft = new Image<Gray, byte>(irRightImage.Size);
+            imageRight = new Image<Gray, byte>(irRightImage.Size);
             //Computes rectification transforms for each head of a calibrated stereo camera.
+            //R is the rotational matrix of ir cameras
+            double[] R = new double[9] { 1, -0.0006, -0.0063, 0.0006, 1, 0.0004, 0.0063, -0.0004, 1 };
+            //T is the translation matrix of ir cameras
+            double[] T = new double[3] { -39.6423, 0.1201, 0.1893 };
+            Matrix<double> Tmatrix = new Matrix<double>(T);
             Matrix<double> Rmatrix = new Matrix<double>(3, 3);
-
             for (int i = 0; i < 9; i++)
             {
                 if (i < 3) Rmatrix[0, i] = R[i];
@@ -128,34 +122,30 @@ namespace Disparity_Map_for_Leap
             }
             System.Drawing.Rectangle Rec1 = new System.Drawing.Rectangle(); //Rectangle Calibrated in camera 1
             System.Drawing.Rectangle Rec2 = new System.Drawing.Rectangle(); //Rectangle Caliubrated in camera 2
-            Q = new Matrix<double>(4, 4); //This is what were interested in the disparity-to-depth mapping matrix
+            Matrix<double> Q = new Matrix<double>(4, 4); //This is what were interested in the disparity-to-depth mapping matrix
             Matrix<double> r1 = new Matrix<double>(3, 3); //rectification transforms (rotation matrices) for Camera 1.
             Matrix<double> r2 = new Matrix<double>(3, 3); //rectification transforms (rotation matrices) for Camera 1.
             Matrix<double> p1 = new Matrix<double>(3, 4); //projection matrices in the new (rectified) coordinate systems for Camera 1.
             Matrix<double> p2 = new Matrix<double>(3, 4); //projection matrices in the new (rectified) coordinate systems for Camera 2.
-            CvInvoke.StereoRectify(IRleftCameraMatrix, new Matrix<double>(KCirleft), IRrightCameraMatrix, new Matrix<double>(KCirright), irLeftImage.Size, Rmatrix, new Matrix<double>(T), r1, r2, p1, p2, Q, Emgu.CV.CvEnum.StereoRectifyType.Default, -1, undistortedRGB.Size, ref Rec1, ref Rec2);
+            CvInvoke.StereoRectify(IRleftCameraMatrix, IRleftDistortionM, IRrightCameraMatrix, IRrightDistortionM, irLeftImage.Size, Rmatrix, Tmatrix, r1, r2, p1, p2, Q, Emgu.CV.CvEnum.StereoRectifyType.Default, -1, irRightImage.Size, ref Rec1, ref Rec2);
             //rectify images
             Mat map1 = new Mat();
             Mat map2 = new Mat();
             Mat map3 = new Mat();
             Mat map4 = new Mat();
-            CvInvoke.InitUndistortRectifyMap(IRleftCameraMatrix, new Matrix<double>(KCirleft), r1, p1, imageLeft.Size, Emgu.CV.CvEnum.DepthType.Cv32F, map1, map2);
+            CvInvoke.InitUndistortRectifyMap(IRleftCameraMatrix, IRleftDistortionM, r1, p1, imageLeft.Size, Emgu.CV.CvEnum.DepthType.Cv32F, map1, map2);
             CvInvoke.Remap(irLeftImage, imageLeft, map1, map2, Emgu.CV.CvEnum.Inter.Linear);
-            CvInvoke.InitUndistortRectifyMap(IRrightCameraMatrix, new Matrix<double>(KCirright), r2, p2, imageRight.Size, Emgu.CV.CvEnum.DepthType.Cv32F, map3, map4);
+            CvInvoke.InitUndistortRectifyMap(IRrightCameraMatrix, IRrightDistortionM, r2, p2, imageRight.Size, Emgu.CV.CvEnum.DepthType.Cv32F, map3, map4);
             CvInvoke.Remap(irRightImage, imageRight, map3, map4, Emgu.CV.CvEnum.Inter.Linear);
 
-            SetSGBMParameter();
-            //Computes disparity map for the specified stereo pair
-            sgbm.Compute(imageLeft, imageRight, disparity);
-            //Since Disparity will be either CV_16S or CV_32F, it needs to be compressed and normalized to CV_8U
-            CvInvoke.Normalize(disparity, disp8, 0, 255, Emgu.CV.CvEnum.NormType.MinMax, Emgu.CV.CvEnum.DepthType.Cv8U);
+            //get disparity map
+            GetDisparityMap();
 
             //Reprojects disparity image to 3D space.
             depthPoints = PointCollection.ReprojectImageTo3D(disparity, Q);
-
         }
 
-        private void SetSGBMParameter()
+        private void GetDisparityMap()
         {
             minDisparity = TBminDisparity.Value;        //Minimum possible disparity value. Normally, it is zero but sometimes rectification algorithms can shift images, so this parameter needs to be adjusted accordingly.
                                                         //Default is zero, should be set to a negative value, if negative disparities are possible (depends on the angle between the cameras views and the distance of the measured object to the cameras).
@@ -177,8 +167,10 @@ namespace Disparity_Map_for_Leap
                                                         //mode (Optional) : Set it to HH to run the full-scale two-pass dynamic programming algorithm. It will consume O(W*H*numDisparities) bytes, 
                                                         //which is large for 640x480 stereo and huge for HD-size pictures. By default, it is set to false.
 
-            sgbm = new StereoSGBM(minDisparity, numDisparities, SADWindowSize, P1, P2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange, mode);
+            StereoSGBM sgbm = new StereoSGBM(minDisparity, numDisparities, SADWindowSize, P1, P2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange, mode);
+            //Computes disparity map for the specified stereo pair
             sgbm.Compute(imageLeft, imageRight, disparity);
+            //Since Disparity will be either CV_16S or CV_32F, it needs to be compressed and normalized to CV_8U
             CvInvoke.Normalize(disparity, disp8, 0, 255, Emgu.CV.CvEnum.NormType.MinMax, Emgu.CV.CvEnum.DepthType.Cv8U);
         }
 
@@ -217,6 +209,7 @@ namespace Disparity_Map_for_Leap
             excelApp.Cells[1, 3] = "Y";
             excelApp.Cells[1, 4] = "Z";
 
+            disparity.Clone();
             int cnt = 2;
             for (int i = 0; i < depthPoints.Length; i++)
             {
@@ -257,70 +250,70 @@ namespace Disparity_Map_for_Leap
         private void TBminDisparity_Scroll(object sender, EventArgs e)
         {
             labminDisparity.Text = TBminDisparity.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBnumDisparities_Scroll(object sender, EventArgs e)
         {
             labnumDisparities.Text = TBnumDisparities.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBSADWindowSize_Scroll(object sender, EventArgs e)
         {
             labSADWindowSize.Text = TBSADWindowSize.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBp1_Scroll(object sender, EventArgs e)
         {
             labp1.Text = TBp1.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBp2_Scroll(object sender, EventArgs e)
         {
             labp2.Text = TBp2.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBdisp12MaxDiff_Scroll(object sender, EventArgs e)
         {
             labdisp12MaxDiff.Text = TBdisp12MaxDiff.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBpreFilterCap_Scroll(object sender, EventArgs e)
         {
             labpreFilterCap.Text = TBpreFilterCap.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBuniquenessRatio_Scroll(object sender, EventArgs e)
         {
             labuniquenessRatio.Text = TBuniquenessRatio.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBspeckleWindowSize_Scroll(object sender, EventArgs e)
         {
             labspeckleWindowSize.Text = TBspeckleWindowSize.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
         private void TBspeckleRange_Scroll(object sender, EventArgs e)
         {
             labspeckleRange.Text = TBspeckleRange.Value.ToString();
-            SetSGBMParameter();
+            GetDisparityMap();
             picboxDisp.Image = disp8.Bitmap;
         }
 
@@ -399,6 +392,7 @@ namespace Disparity_Map_for_Leap
         {
             Image<Gray, byte> imageCalib = new Image<Gray, byte>(1920, 1080, new Gray(255));
             double[] data = new double[640 * 240];
+            double[] Krgb = new double[9] { 706.138, 0.840, 948.851, 0, 705.323, 519.707, 0, 0, 1 };
             double[] _Kirleft = new double[9] { 132.620, 0.195, 318.153, 0, 66.408, 120.117, 0, 0, 1 };
             double[] _KirleftInverse = new double[9] { 0.0025, 0, -2.3963, 0, 0.005, -1.8088, 0, 0, 1 };
             double[] _KCirleft = new double[5] { 0.16715, -0.10133, -0.00150, 0, 0.01748 };
@@ -410,9 +404,9 @@ namespace Disparity_Map_for_Leap
             double z = 1;
             //double max = 0;
            
-            for (int y = 0; y < 1080; y++)
+            for (int y = 0; y < 240; y++)
             {
-                for (int x = 0; x < 1920; x++)
+                for (int x = 0; x < 640; x++)
                 {
                     //int index = y * 640 + x;
                     //z = depthPoints[index].Z;
