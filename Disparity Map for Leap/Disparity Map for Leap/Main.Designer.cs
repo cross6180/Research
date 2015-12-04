@@ -67,7 +67,8 @@
             this.btnBlend = new System.Windows.Forms.Button();
             this.btnBlendRGB = new System.Windows.Forms.Button();
             this.picboxRGB = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.picboxRGBandIR = new System.Windows.Forms.PictureBox();
+            this.picboxRGBandDepth = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.picboxLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxDisp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picbocRight)).BeginInit();
@@ -82,7 +83,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleWindowSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxRGB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGBandIR)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGBandDepth)).BeginInit();
             this.SuspendLayout();
             // 
             // picboxLeft
@@ -418,7 +420,7 @@
             this.TBspeckleRange.Size = new System.Drawing.Size(516, 45);
             this.TBspeckleRange.TabIndex = 32;
             this.TBspeckleRange.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.TBspeckleRange.Value = 3;
+            this.TBspeckleRange.Value = 1;
             this.TBspeckleRange.Visible = false;
             this.TBspeckleRange.Scroll += new System.EventHandler(this.TBspeckleRange_Scroll);
             // 
@@ -451,7 +453,7 @@
             this.labspeckleRange.Name = "labspeckleRange";
             this.labspeckleRange.Size = new System.Drawing.Size(11, 12);
             this.labspeckleRange.TabIndex = 35;
-            this.labspeckleRange.Text = "3";
+            this.labspeckleRange.Text = "1";
             this.labspeckleRange.Visible = false;
             // 
             // labspeckleWindowSize
@@ -466,7 +468,7 @@
             // 
             // btnBlend
             // 
-            this.btnBlend.Location = new System.Drawing.Point(496, 535);
+            this.btnBlend.Location = new System.Drawing.Point(14, 609);
             this.btnBlend.Name = "btnBlend";
             this.btnBlend.Size = new System.Drawing.Size(123, 23);
             this.btnBlend.TabIndex = 36;
@@ -476,11 +478,11 @@
             // 
             // btnBlendRGB
             // 
-            this.btnBlendRGB.Location = new System.Drawing.Point(638, 535);
+            this.btnBlendRGB.Location = new System.Drawing.Point(195, 609);
             this.btnBlendRGB.Name = "btnBlendRGB";
             this.btnBlendRGB.Size = new System.Drawing.Size(123, 23);
             this.btnBlendRGB.TabIndex = 37;
-            this.btnBlendRGB.Text = "blend RGB and";
+            this.btnBlendRGB.Text = "blend RGB and depth";
             this.btnBlendRGB.UseVisualStyleBackColor = true;
             this.btnBlendRGB.Click += new System.EventHandler(this.btnBlendRGB_Click);
             // 
@@ -488,26 +490,36 @@
             // 
             this.picboxRGB.Location = new System.Drawing.Point(496, 24);
             this.picboxRGB.Name = "picboxRGB";
-            this.picboxRGB.Size = new System.Drawing.Size(445, 169);
+            this.picboxRGB.Size = new System.Drawing.Size(541, 211);
             this.picboxRGB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picboxRGB.TabIndex = 38;
             this.picboxRGB.TabStop = false;
             // 
-            // pictureBox1
+            // picboxRGBandIR
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(496, 221);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(445, 169);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 39;
-            this.pictureBox1.TabStop = false;
+            this.picboxRGBandIR.Location = new System.Drawing.Point(496, 251);
+            this.picboxRGBandIR.Name = "picboxRGBandIR";
+            this.picboxRGBandIR.Size = new System.Drawing.Size(541, 211);
+            this.picboxRGBandIR.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picboxRGBandIR.TabIndex = 39;
+            this.picboxRGBandIR.TabStop = false;
+            // 
+            // picboxRGBandDepth
+            // 
+            this.picboxRGBandDepth.Location = new System.Drawing.Point(496, 472);
+            this.picboxRGBandDepth.Name = "picboxRGBandDepth";
+            this.picboxRGBandDepth.Size = new System.Drawing.Size(541, 211);
+            this.picboxRGBandDepth.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picboxRGBandDepth.TabIndex = 40;
+            this.picboxRGBandDepth.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1089, 593);
-            this.Controls.Add(this.pictureBox1);
+            this.ClientSize = new System.Drawing.Size(1232, 695);
+            this.Controls.Add(this.picboxRGBandDepth);
+            this.Controls.Add(this.picboxRGBandIR);
             this.Controls.Add(this.picboxRGB);
             this.Controls.Add(this.btnBlendRGB);
             this.Controls.Add(this.btnBlend);
@@ -563,7 +575,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TBspeckleWindowSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picboxRGB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGBandIR)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picboxRGBandDepth)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -610,7 +623,8 @@
         private System.Windows.Forms.Button btnBlend;
         private System.Windows.Forms.Button btnBlendRGB;
         private System.Windows.Forms.PictureBox picboxRGB;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox picboxRGBandIR;
+        private System.Windows.Forms.PictureBox picboxRGBandDepth;
 
 
     }

@@ -20,7 +20,7 @@ namespace Disparity_Map_for_Leap
     {
         private Mat disparity, disp8;        
         private int minDisparity, numDisparities, SADWindowSize, P1, P2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange;
-        private Image<Gray, byte> irLeftImage, irRightImage, imageLeft, imageRight, IRblendImage, imageZ;
+        private Image<Gray, byte> irLeftImage, irRightImage, imageLeft, imageRight, IRblendImage;
         private Image<Bgr, byte> undistortedRGB, grayBGRImage;        
 
         private Matrix<double> IRleftCameraMatrix = new Matrix<double>(3, 3);
@@ -36,21 +36,24 @@ namespace Disparity_Map_for_Leap
             ReadImageAndCameraMatrix();
            
             picboxRGB.Image = undistortedRGB.Bitmap;
-            undistortedRGB.Save("D:/Research/Image/disparity map/undistortRGB3.bmp");
+            undistortedRGB.Save("D:/Research/Image/disparity map/undistort and rectify image/undistortRGB3.bmp");
             
             get3DspacePoint();
+
             picboxLeft.Image = imageLeft.Bitmap;
             picbocRight.Image = imageRight.Bitmap;
             picboxDisp.Image = disp8.Bitmap;
-            imageLeft.Save("D:/Research/Image/disparity map/rectLeapLeft3.bmp");
-            imageRight.Save("D:/Research/Image/disparity map/rectLeapRight3.bmp");
-            getDepth();
+            imageLeft.Save("D:/Research/Image/disparity map/undistort and rectify image/rectLeapLeft3.bmp");
+            imageRight.Save("D:/Research/Image/disparity map/undistort and rectify image/rectLeapRight3.bmp");
+            //getDepth();
         }
 
         private void ReadImageAndCameraMatrix()
         {
             Mat imageL = CvInvoke.Imread("D:/Research/Image/disparity map/LeapLeft3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
             Mat imageR = CvInvoke.Imread("D:/Research/Image/disparity map/LeapRight3.bmp", Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            //irLeftImage = resizeImage(imageL.ToImage<Gray, byte>());
+            //irRightImage = resizeImage(imageR.ToImage<Gray, byte>());
             irLeftImage = imageL.ToImage<Gray, byte>();
             irRightImage = imageR.ToImage<Gray, byte>();
             Mat rgb = CvInvoke.Imread("D:/Research/Image/disparity map/rgb3.bmp", Emgu.CV.CvEnum.LoadImageType.Color);
@@ -64,6 +67,7 @@ namespace Disparity_Map_for_Leap
             //     [ fc(1)  alpha_c*fc(1)  cc(1) ]
             // K = [   0        fc(2)      cc(2) ]
             //     [   0          0          1   ]
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////影像縮放，內部參數也要跟著縮放才能維持原本的比例關係，所以影像放大三倍，內部參數也要乘以3倍
             double[] Kirleft = new double[9] { 134.150, 0.318, 318.021, 0, 67.096, 119.986, 0, 0, 1 };
             double[] Kirright = new double[9] { 133.929, 0.335, 318.059, 0, 67.052, 119.872, 0, 0, 1 };
             double[] Krgb = new double[9] { 706.138, 0.840, 948.851, 0, 705.323, 519.707, 0, 0, 1 };
@@ -96,17 +100,57 @@ namespace Disparity_Map_for_Leap
                     RGBcameraMatrix[2, i - 6] = Krgb[i];
                 }
             }
-            //remove distortion
+            //remove distortion of rgb image
             CvInvoke.Undistort(rgbImage, undistortedRGB, RGBcameraMatrix, new Matrix<double>(KCrgb));
 
             disparity = new Mat();
             disp8 = new Mat();
         }
 
+        private Image<Gray, Byte> resizeImage(Image<Gray, Byte> image)
+        {
+            //將leap motion left影像大小轉成跟彩色影像(1920*1080)一樣
+            //640 x 240
+            Image<Gray, Byte> zoomImage = image.Resize(3.0, Emgu.CV.CvEnum.Inter.Linear);  //1920 x 720
+            Image<Gray, Byte> imageFinal = new Image<Gray, Byte>(1920, 1080);
+            for (int y = 0; y < 1080; y++)
+            {
+                //if (y < 720)
+                //{
+                //    for (int x = 0; x < 1920; x++)
+                //    {
+                //        imageZ.Data[y, x, 0] = zoomImage.Data[y, x, 0];
+                //    }
+                //}
+                //else
+                //{
+                //    for (int x = 0; x < 1920; x++)
+                //    {
+                //        imageZ.Data[y, x, 0] = 0;//black
+                //    }
+                //}
+                if (y < 180 || y >= 900)
+                {
+                    for (int x = 0; x < 1920; x++)
+                    {
+                        imageFinal.Data[y, x, 0] = 0;//black
+                    }
+                }
+                else
+                {
+                    for (int x = 0; x < 1920; x++)
+                    {
+                        imageFinal.Data[y, x, 0] = zoomImage.Data[y - 180, x, 0];
+                    }
+                }
+            }
+            return imageFinal;
+        }
+
         private void get3DspacePoint()
         {
-            imageLeft = new Image<Gray, byte>(irRightImage.Size);
-            imageRight = new Image<Gray, byte>(irRightImage.Size);
+            imageLeft = new Image<Gray, byte>(irLeftImage.Size);
+            imageRight = new Image<Gray, byte>(irLeftImage.Size);
             //Computes rectification transforms for each head of a calibrated stereo camera.
             //R is the rotational matrix of ir cameras
             double[] R = new double[9] { 1, -0.0006, -0.0063, 0.0006, 1, 0.0004, 0.0063, -0.0004, 1 };
@@ -127,7 +171,7 @@ namespace Disparity_Map_for_Leap
             Matrix<double> r2 = new Matrix<double>(3, 3); //rectification transforms (rotation matrices) for Camera 1.
             Matrix<double> p1 = new Matrix<double>(3, 4); //projection matrices in the new (rectified) coordinate systems for Camera 1.
             Matrix<double> p2 = new Matrix<double>(3, 4); //projection matrices in the new (rectified) coordinate systems for Camera 2.
-            CvInvoke.StereoRectify(IRleftCameraMatrix, IRleftDistortionM, IRrightCameraMatrix, IRrightDistortionM, irLeftImage.Size, Rmatrix, Tmatrix, r1, r2, p1, p2, Q, Emgu.CV.CvEnum.StereoRectifyType.Default, -1, irRightImage.Size, ref Rec1, ref Rec2);
+            CvInvoke.StereoRectify(IRleftCameraMatrix, IRleftDistortionM, IRrightCameraMatrix, IRrightDistortionM, imageLeft.Size, Rmatrix, Tmatrix, r1, r2, p1, p2, Q, Emgu.CV.CvEnum.StereoRectifyType.Default, -1, imageLeft.Size, ref Rec1, ref Rec2);
             //rectify images
             Mat map1 = new Mat();
             Mat map2 = new Mat();
@@ -143,6 +187,32 @@ namespace Disparity_Map_for_Leap
 
             //Reprojects disparity image to 3D space.
             depthPoints = PointCollection.ReprojectImageTo3D(disparity, Q);
+            
+            //draw depth image
+            //Image<Gray, byte> depthImage = new Image<Gray, byte>(640, 240,new Gray(255));
+            //double max = 0;
+            //for (int y = 0; y < 240; y++)
+            //{
+            //    for (int x = 0; x < 640; x++)
+            //    {
+            //        int index = y * 640 + x;
+            //        double z = depthPoints[index].Z * 16;
+            //        if (z < 0) continue;
+            //        if (z > max) max = z;
+            //        int imagedepth = (int)(z / max * 225 + .5);
+            //        depthImage[y, x] = new Gray(imagedepth);
+            //    }
+            //}
+            //CvInvoke.Imshow("depth", depthImage);
+            //double alpha = 0.7; //第一個影像的權值
+            //double beta = 1.0 - alpha; //第二個影像的權值
+            //double gamma = 0.0; //添加的常數項
+            ////imageLeft：第一個影像，leap motion左邊相機影像
+            ////disparity：第二個影像，深度影像
+            //IRblendImage = imageLeft.AddWeighted(depthImage, alpha, beta, gamma);//輸出的影像
+            //CvInvoke.Imshow("IRblend", IRblendImage);
+            //depthImage.Save("D:/Research/Image/disparity map/depth image/3_.bmp");
+            //IRblendImage.Save("D:/Research/Image/disparity map/depth image/3_bbb.bmp");
         }
 
         private void GetDisparityMap()
@@ -172,6 +242,7 @@ namespace Disparity_Map_for_Leap
             sgbm.Compute(imageLeft, imageRight, disparity);
             //Since Disparity will be either CV_16S or CV_32F, it needs to be compressed and normalized to CV_8U
             CvInvoke.Normalize(disparity, disp8, 0, 255, Emgu.CV.CvEnum.NormType.MinMax, Emgu.CV.CvEnum.DepthType.Cv8U);
+            
         }
 
         private void getDepth()
@@ -213,11 +284,13 @@ namespace Disparity_Map_for_Leap
             int cnt = 2;
             for (int i = 0; i < depthPoints.Length; i++)
             {
-                if (depthPoints[i].Z < 0 || depthPoints[i].Z > 1000) continue;
+                //cvReprojectTo3D出來的X/W,Y/W,Z/W都要乘以16 (也就是W除以16)，才能得到正確的三維坐標信息
+                //因為在計算disparity值時要使用32位float格式可以得到真實的值，而CV_16S 格式得到的視差矩陣則需要除以16 才能得到正確的視差，但是SGBM只支持 CV_16S 格式的 disparity 矩陣
+                if (depthPoints[i].Z*16 < 10 || depthPoints[i].Z*16 > 400) continue;
                 excelApp.Cells[cnt, 1] = i;
                 excelApp.Cells[cnt, 2] = depthPoints[i].X;
                 excelApp.Cells[cnt, 3] = depthPoints[i].Y;
-                excelApp.Cells[cnt, 4] = depthPoints[i].Z;
+                excelApp.Cells[cnt, 4] = depthPoints[i].Z*16;
                 //Z = fB/d, where
                 //double f = 67; //f is the focal length (in pixels), you called it as eye base/translation between cameras
                 //double B = 0.03964;//B is the stereo baseline (in meters)
@@ -331,6 +404,7 @@ namespace Disparity_Map_for_Leap
 
         private void btnBlend_Click(object sender, EventArgs e)
         { 
+            //IR左邊影像與深度影像疊合
             IRImageBlending();
             IRblendImage.Save(@"D:\Research\Image\disparity map\blend image\IRandDepth3.bmp");
             disp8.ToImage<Gray, byte>().Save(@"D:\Research\Image\disparity map\depth image\depth3.bmp");
@@ -338,63 +412,34 @@ namespace Disparity_Map_for_Leap
 
         private void RGBImageBlend()
         {
+            //rectify後的IR影像放大三倍直接與彩色影像疊合
             double alpha = 0.7; //第一個影像的權值
             double beta = 1.0 - alpha; //第二個影像的權值
             double gamma = 0.0; //添加的常數項
-            //Image<Gray, Byte> depthImage = disparity.ToImage<Gray, byte>();   //640 x 240
-            //Image<Gray, Byte> zoomImage = depthImage.Resize(3.0, Emgu.CV.CvEnum.Inter.Linear);  //1920 x 720
-            //將leap motion left影像大小轉成跟彩色影像(1920*1080)一樣
-            //640 x 240
-            Image<Gray, Byte> zoomImage = imageLeft.Resize(3.0, Emgu.CV.CvEnum.Inter.Linear);  //1920 x 720
-            imageZ = new Image<Gray, Byte>(1920, 1080);
-            for (int y = 0; y < 1080; y++)
-            {
-                //if (y < 720)
-                //{
-                //    for (int x = 0; x < 1920; x++)
-                //    {
-                //        imageZ.Data[y, x, 0] = zoomImage.Data[y, x, 0];
-                //    }
-                //}
-                //else
-                //{
-                //    for (int x = 0; x < 1920; x++)
-                //    {
-                //        imageZ.Data[y, x, 0] = 0;//black
-                //    }
-                //}
-                if (y < 180 || y >= 900)
-                {
-                    for (int x = 0; x < 1920; x++)
-                    {
-                        imageZ.Data[y, x, 0] = 0;//black
-                    }
-                }
-                else
-                {
-                    for (int x = 0; x < 1920; x++)
-                    {
-                        imageZ.Data[y, x, 0] = zoomImage.Data[y - 180, x, 0];
-                    }
-                }
-            }
+            
+            //將leap motion left(640*240)影像大小轉成跟彩色影像(1920*1080)一樣
+            Image<Gray, byte> imageZ = resizeImage(imageLeft);
             //converting the grayscale image back to color
             grayBGRImage = imageZ.Convert<Bgr, byte>();
             //blend leap left and rgb
             Image<Bgr, Byte> blendImage = undistortedRGB.AddWeighted(grayBGRImage, alpha, beta, gamma);
             //CvInvoke.Imshow("zoom", imageZ);
             //CvInvoke.Imshow("rgb", undistortedRGB);
-            CvInvoke.Imshow("rgbBlend", blendImage);
+            //CvInvoke.Imshow("rgbBlend", blendImage);
+            picboxRGBandIR.Image = blendImage.ToBitmap();
             blendImage.Save("D:/Research/Image/disparity map/blend image/rgbBlend3.bmp");
         }
 
         private void getCalibIRImage()
         {
+            Mat calib = new Mat();
             Image<Gray, byte> imageCalib = new Image<Gray, byte>(1920, 1080, new Gray(255));
-            double[] data = new double[640 * 240];
+            double[] data = new double[1920 * 1080];
             double[] Krgb = new double[9] { 706.138, 0.840, 948.851, 0, 705.323, 519.707, 0, 0, 1 };
-            double[] _Kirleft = new double[9] { 132.620, 0.195, 318.153, 0, 66.408, 120.117, 0, 0, 1 };
-            double[] _KirleftInverse = new double[9] { 0.0025, 0, -2.3963, 0, 0.005, -1.8088, 0, 0, 1 };
+            //IR影像經過rectify之後得到的p1內部參數矩陣
+            double[] _Kirleft = new double[9] { 67.052, 0, 320.907, 0, 67.052, 119.355, 0, 0, 1 };
+            //使用matlab計算得到的內部參數反矩陣
+            double[] _KirleftInverse = new double[9] { 0.0149, 0, -4.7859, 0, 0.0149, -1.78, 0, 0, 1 };
             double[] _KCirleft = new double[5] { 0.16715, -0.10133, -0.00150, 0, 0.01748 };
             //R is the rotational matrix of rgb camera and ir camera
             double[] _R = new double[9] { 1, -0.0065, -0.0047, 0.0062, 0.9973, -0.0725, 0.0051, 0.0725, 0.9974 };
@@ -402,18 +447,16 @@ namespace Disparity_Map_for_Leap
             double[] _T = new double[3] { -19.0855, -38.7696, -4.5285 };
             //z is the depth
             double z = 1;
-            //double max = 0;
+            double max = 0;
            
             for (int y = 0; y < 240; y++)
             {
                 for (int x = 0; x < 640; x++)
                 {
-                    //int index = y * 640 + x;
-                    //z = depthPoints[index].Z;
-                    //z = imageLeft.Data[y, x, 0];
-                    //z = grayBGRImage.Data[y, x, 0];
-                    z = imageZ.Data[y, x, 0];
-                    //if (z > max) max = z;
+                    int index = y * 640 + x;
+                    z = depthPoints[index].Z * 16;
+                    if (z < 0 || z > 200) continue;
+                    if (z > max) max = z;
                     //乘以IR內部參數反矩陣，得到此點在IR相機座標中的座標
                     double Xir = (_KirleftInverse[0] * x + _KirleftInverse[1] * y + _KirleftInverse[2]) * z;
                     double Yir = (_KirleftInverse[3] * x + _KirleftInverse[4] * y + _KirleftInverse[5]) * z;
@@ -427,28 +470,33 @@ namespace Disparity_Map_for_Leap
                     double x_ = Krgb[0] * Xrgb / Zrgb + Krgb[1] * Yrgb / Zrgb + Krgb[2];
                     double y_ = Krgb[3] * Xrgb / Zrgb + Krgb[4] * Yrgb / Zrgb + Krgb[5];
 
-                    if (x_ < 0 || x_ >= 1920 || y_ < 0 || y_ >= 1080) continue;
-                    imageCalib[(int)(y_ + .5), (int)(x_ + .5)] = imageZ[y, x];//補齊四捨五入的值，因為int會無條件捨棄
-                    //int index_ = (int)y_ * 640 + (int)x_;
-                    //data[index_] = depthPoints[index].Z / max * 255;
+                    if (x_ < 0 || (x_ + .5) >= 1920 || y_ < 0 || (y_ + .5) >= 1080) continue;//補齊四捨五入的值，因為int會無條件捨棄
+                    //imageCalib[(int)(y_ + .5), (int)(x_ + .5)] = imageLeft[x, y];
+                        //new Gray(depthPoints[index].Z * 16 / max * 225);
+                    //int index_ = (int)(y_ + .5) * 1920 + (int)(x_ + .5);
+                    //data[index_] = depthPoints[index].Z * 16 / max * 225;
+                    int imagedepth = (int)(depthPoints[index].Z * 16 / max * 225 + .5);
+                    imageCalib[(int)(y_ + .5), (int)(x_ + .5)] = new Gray(imagedepth);
                 }
             }
-            
             //Image<Bgr, byte> image = new Image<Bgr, byte>(
-            CvInvoke.Imshow("1", imageCalib);
-            pictureBox1.Image = imageCalib.Bitmap;
-            double alpha = 0.7; //第一個影像的權值
+            //CvInvoke.Imshow("1", imageCalib);
+            //picboxRGBandIR.Image = imageCalib.Bitmap;
+            double alpha = 0.2; //第一個影像的權值
             double beta = 1.0 - alpha; //第二個影像的權值
             double gamma = 0.0; //添加的常數項
             Image<Bgr, Byte> blendImage = undistortedRGB.AddWeighted(imageCalib.Convert<Bgr, byte>(), alpha, beta, gamma);
-            CvInvoke.Imshow("2", blendImage);
-            imageCalib.Save("D:/Research/Image/disparity map/test3.bmp");
+            //CvInvoke.Imshow("2", blendImage);
+            picboxRGBandDepth.Image = blendImage.ToBitmap();
+            imageCalib.Save("D:/Research/Image/disparity map/depth image/RGBcoordinateDepth3_1.bmp");
+            blendImage.Save("D:/Research/Image/disparity map/blend image/RGBblendDepth3_1.bmp");
             //CvInvoke.cvCreateImage(CvInvoke.cvGetSize(data), Emgu.CV.CvEnum.IplDepth.IplDepth_8U, 3);
             
         }
 
         private void btnBlendRGB_Click(object sender, EventArgs e)
         {
+            //彩色影像與深度影像的疊合
             RGBImageBlend();
             getCalibIRImage();
         }
